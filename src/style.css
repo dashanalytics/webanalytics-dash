@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+table, th, td {
+    margin: 20px 10px;
+
+    border: 1px solid lightgray;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 5px 20px;
+}

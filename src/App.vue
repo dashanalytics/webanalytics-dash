@@ -1,0 +1,148 @@
+<script lang="ts" setup>
+import {ref} from "vue";
+import {AccessReport, FetchAccessReportsByRecentDays, Server, SortTimestamps} from "./analytics.ts";
+import Dashboard from "./components/Dashboard.vue";
+
+const statusText = ref('')
+const statusTextStyle = ref('')
+
+const showDashboard = ref(false)
+
+const reports = ref(new Map<string, AccessReport>())
+
+const start = ref('')
+const end = ref('')
+
+function insight() {
+  const host = (document.getElementById('server') as HTMLInputElement).value
+  const accessToken = (document.getElementById('access_token') as HTMLInputElement).value
+  const dataRange = +(document.getElementById('data-range') as HTMLInputElement).value
+
+  if (host.length == 0) {
+    return
+  }
+
+  statusTextStyle.value = ''
+  statusText.value = ''
+
+  const server = {
+    host: host,
+    accessToken: accessToken,
+  }
+
+  statusTextStyle.value = 'font-bold text-blue-700'
+  statusText.value = 'Fetching statistics...'
+
+  showDashboard.value = false
+
+  FetchAccessReportsByRecentDays(server as Server, dataRange).then((result) => {
+
+    let timestamps = []
+    for (const [timestamp,] of result) {
+      timestamps.push(timestamp)
+    }
+    SortTimestamps(timestamps)
+
+    start.value = timestamps[0]
+    end.value = timestamps[timestamps.length - 1]
+
+    reports.value = result
+
+    statusTextStyle.value = 'font-bold text-green-500'
+    statusText.value = 'Success.'
+
+    showDashboard.value = true
+
+    setTimeout(() => document.getElementById('dashboard')!.scrollIntoView({behavior: 'smooth'}), 500)
+
+  }).catch((err) => {
+    statusTextStyle.value = 'font-bold text-red-700 bold'
+
+    if (!(err instanceof Response)) {
+      statusText.value = 'Undefined error. Check console in DevTools.'
+
+      console.log(err)
+      return
+    }
+
+    const resp = err as Response
+
+    if (resp.status == undefined) {
+      statusText.value = 'Undefined error. Check console in DevTools.'
+      return
+    }
+
+    switch (resp.status) {
+      case 403:
+        statusText.value = '403: Forbidden - Authentication failure.'
+        break
+      case 404:
+        statusText.value = '404: Not Found - API not supported.'
+        break
+      case 500:
+        statusText.value = '500: Internal Server Error'
+        break
+      case 502:
+        statusText.value = '502: Bad Gateway'
+        break
+      default:
+        statusText.value = `${resp.status} ${resp.statusText}`
+    }
+  })
+}
+</script>
+
+<template>
+  <div class="flex items-center justify-center h-screen gap-48">
+    <div><img alt="logo" class="" src="./assets/dashanalytics.svg"/></div>
+    <div class="w-full" style="width: 500px">
+      <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
+            Server
+          </label>
+          <input
+              id="server"
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="Server" type="text">
+        </div>
+        <div class="mb-6">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+            Access Token
+          </label>
+          <input
+              id="access_token"
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="Access Token" type="password">
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2">
+            Data Range from Now (days)
+          </label>
+          <input
+              id="data-range"
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="Days" type="number" value="7">
+        </div>
+        <div class="flex items-center justify-between">
+          <button
+              class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="button"
+              @click="insight()">
+            Insight
+          </button>
+          <p :class="statusTextStyle">{{ statusText }}</p>
+        </div>
+      </form>
+      <p class="text-center text-gray-500 text-xs">
+        <a href="https://jellyterra.com" target="_blank">&copy;2024 Jelly Terra. All rights reserved.</a>
+      </p>
+    </div>
+  </div>
+  <div id="dashboard" :class="{ hidden: !showDashboard }" class="flex items-center justify-center">
+    <Dashboard :reports="reports" :start="start" :end="end"></Dashboard>
+  </div>
+</template>
+
+<style scoped>
+</style>
