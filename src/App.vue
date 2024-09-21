@@ -2,6 +2,7 @@
 import {ref} from "vue";
 import {AccessReport, FetchAccessReportsByRecentDays, Server, SortTimestamps} from "./analytics.ts";
 import Dashboard from "./components/Dashboard.vue";
+import RawDataTable from "./components/RawDataTable.vue";
 
 const statusText = ref('')
 const statusTextStyle = ref('')
@@ -93,7 +94,7 @@ function insight() {
 </script>
 
 <template>
-  <div class="flex flex-col lg:flex-row items-center justify-center h-screen gap-48">
+  <div class="flex flex-row items-center justify-center h-screen gap-48">
     <div><img alt="logo" class="" src="./assets/dashanalytics.svg"/></div>
     <div class="w-full" style="width: 500px">
       <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
@@ -139,8 +140,9 @@ function insight() {
       </p>
     </div>
   </div>
-  <div id="dashboard" :class="{ hidden: !showDashboard }" class="flex items-center justify-center">
+  <div id="dashboard" :class="{ hidden: !showDashboard }" class="flex flex-col items-center justify-center">
     <Dashboard :reports="reports" :start="start" :end="end"></Dashboard>
+    <RawDataTable :reports="reports"></RawDataTable>
   </div>
 </template>
 

@@ -4,7 +4,6 @@ import {ref, watch} from "vue"
 import AccessCountChart from "./AccessCountChart.vue";
 import VisitorGeoMap from "./VisitorGeoMap.vue";
 import CountryStatisticsChart from "./CountryStatisticsTable.vue";
-import RawDataTable from "./RawDataTable.vue";
 
 const recentDaysReports = ref()
 const recentHoursReports = ref()
@@ -30,7 +29,6 @@ watch(props, () => {
     <VisitorGeoMap :reports="props.reports" :start="props.start" :end="props.end"></VisitorGeoMap>
     <CountryStatisticsChart :reports="props.reports" :start="props.start"
                             :end="props.end"></CountryStatisticsChart>
-    <RawDataTable :reports="props.reports"></RawDataTable>
   </div>
 </template>
 

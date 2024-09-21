@@ -14,6 +14,7 @@ export class AccessReport {
     public country = ''
     public source_ip = ''
     public uuid = ''
+    public user_agent = ''
     public deploy_time = ''
     public target = ''
 }
