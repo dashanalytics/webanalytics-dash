@@ -61,7 +61,7 @@ watch(props, () => {
 </script>
 
 <template>
-  <div :id="props.id" style="width: 80vw; height: 60vh"></div>
+  <div :id="props.id" class="m-10" style="overflow: auto; width: 80vw; height: 60vh"></div>
 </template>
 
 <style scoped>
