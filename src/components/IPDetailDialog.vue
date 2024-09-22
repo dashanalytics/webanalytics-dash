@@ -10,9 +10,9 @@ const props = defineProps({
 const isOpen = ref(false);
 const detail = ref({})
 
-async function ipLookup(ip: string) {
+async function ipLookup(queryString: string, ip: string) {
   if (localStorage.getItem(`ip-${ip}`) == undefined) {
-    const resp = await fetch(`http://ip-api.com/json/${ip}?fields=status,message,continent,continentCode,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,offset,isp,org,as,asname,reverse,mobile,proxy,hosting`)
+    const resp = await fetch(queryString.replace('%s', encodeURIComponent(ip)))
     localStorage.setItem(`ip-${ip}`, await resp.text())
   }
   return localStorage.getItem(`ip-${ip}`)
@@ -31,8 +31,16 @@ function clearCache() {
 watch(props, () => {
   isOpen.value = true
   detail.value = {status: 'fetching'}
-  ipLookup(props.ip).then((info) => {
+
+  const queryString = localStorage.getItem('ipLookupQueryString')
+
+  ipLookup(queryString, props.ip).then((info) => {
     detail.value = JSON.parse(info)
+  }).catch((err) => {
+    detail.value = {
+      'hint': 'Might be blocked by client. Check DevTools and your browser extensions.',
+      err: err,
+    }
   })
 })
 </script>

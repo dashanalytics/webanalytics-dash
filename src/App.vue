@@ -111,7 +111,7 @@ function share() {
   statusText.value = 'Copied to clipboard.'
 }
 
-document.body.onload = () => {
+document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
 
   const host = document.getElementById('server') as HTMLInputElement
@@ -121,7 +121,7 @@ document.body.onload = () => {
   host.value = params.get('server')
   accessToken.value = params.get('access_token')
   dataRange.value = params.get('data_range') || '7'
-}
+})
 </script>
 
 <template>
@@ -130,7 +130,7 @@ document.body.onload = () => {
     <div class="w-full max-w-xl">
       <form class="m-5 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <div class="mb-4">
-          <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="server">
             Server
           </label>
           <input

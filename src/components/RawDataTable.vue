@@ -11,9 +11,25 @@ const props = defineProps({
 const ipDetail = ref("")
 const ipDetailShow = ref(0)
 
+function change() {
+  localStorage.setItem('ipLookupQueryString', (document.getElementById('ip-query-string') as HTMLInputElement).value)
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  (document.getElementById('ip-query-string') as HTMLInputElement).value = localStorage.getItem('ipLookupQueryString')
+})
 </script>
 
 <template>
+  <div class="mb-4">
+    <label class="block text-gray-700 text-sm font-bold mb-2" for="ip-query-string">IP Lookup Query String (URL with %s
+      in place of query)</label>
+    <input
+        id="ip-query-string"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        placeholder="https://api.ipgeolocation.io/ipgeo?apiKey=API_KEY&ip=%s" type="text"
+        @change="change()">
+  </div>
   <IPDetailDialog :ip="ipDetail" :trigger="ipDetailShow"></IPDetailDialog>
   <table>
     <thead>
