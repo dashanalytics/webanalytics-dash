@@ -16,7 +16,7 @@ const end = ref('')
 function insight() {
   const host = (document.getElementById('server') as HTMLInputElement).value
   const accessToken = (document.getElementById('access_token') as HTMLInputElement).value
-  const dataRange = +(document.getElementById('data-range') as HTMLInputElement).value
+  const dataRange = +(document.getElementById('data_range') as HTMLInputElement).value
 
   if (host.length == 0) {
     return
@@ -63,7 +63,7 @@ function insight() {
     statusTextStyle.value = 'font-bold text-red-700 bold'
 
     if (!(err instanceof Response)) {
-      statusText.value = 'Undefined error. Check console in DevTools.'
+      statusText.value = 'Check error in DevTools.'
 
       console.log(err)
       return
@@ -72,7 +72,7 @@ function insight() {
     const resp = err as Response
 
     if (resp.status == undefined) {
-      statusText.value = 'Undefined error. Check console in DevTools.'
+      statusText.value = 'Check error in DevTools.'
       return
     }
 
@@ -93,6 +93,34 @@ function insight() {
         statusText.value = `${resp.status} ${resp.statusText}`
     }
   })
+}
+
+function share() {
+  const host = (document.getElementById('server') as HTMLInputElement).value
+  const accessToken = (document.getElementById('access_token') as HTMLInputElement).value
+  const dataRange = (document.getElementById('data_range') as HTMLInputElement).value
+
+  const params = new URLSearchParams()
+  params.set('server', host)
+  params.set('access_token', accessToken)
+  params.set('data_range', dataRange)
+
+  navigator.clipboard.writeText(`${location.protocol}//${location.host}/?${params.toString()}`)
+
+  statusTextStyle.value = ''
+  statusText.value = 'Copied to clipboard.'
+}
+
+document.body.onload = () => {
+  const params = new URLSearchParams(window.location.search);
+
+  const host = document.getElementById('server') as HTMLInputElement
+  const accessToken = document.getElementById('access_token') as HTMLInputElement
+  const dataRange = document.getElementById('data_range') as HTMLInputElement
+
+  host.value = params.get('server')
+  accessToken.value = params.get('access_token')
+  dataRange.value = params.get('data_range')
 }
 </script>
 
@@ -124,7 +152,7 @@ function insight() {
             Data Range from Now (days)
           </label>
           <input
-              id="data-range"
+              id="data_range"
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Days" type="number" value="7">
         </div>
@@ -134,12 +162,20 @@ function insight() {
           <label for="do-filter-bot" class="ms-2 text-sm font-bold">Filter Reports from Bots</label>
         </div>
         <div class="flex items-center justify-between">
-          <button
-              class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              type="button"
-              @click="insight()">
-            Insight
-          </button>
+          <div class="flex flex-row gap-2">
+            <button
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                type="button"
+                @click="insight()">
+              Insight
+            </button>
+            <button
+                class="bg-white hover:bg-gray-400 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                type="button"
+                @click="share()">
+              Share
+            </button>
+          </div>
           <p :class="statusTextStyle">{{ statusText }}</p>
         </div>
       </form>
