@@ -35,6 +35,23 @@ export function SortTimestamps(timestamps: string[]) {
     })
 }
 
+export function IsBotReport(report: AccessReport) {
+    return report.user_agent.includes('bot')
+}
+
+export function FilterBotReports(reports: Map<string, AccessReport>) {
+    let filtered = new Map<string, AccessReport>()
+
+    for (const [timestamp, report] of reports) {
+        if (IsBotReport(report)) {
+            continue
+        }
+        filtered.set(timestamp, report)
+    }
+
+    return filtered
+}
+
 export async function FetchAccessReportsTimestampsByRange(server: Server, start: string, end: string) {
     const resp = await fetch(
         `${server.host}/api/v1/getAccessReportTimestamps?token=${server.accessToken}&start=${start}&end=${end}`
@@ -157,7 +174,7 @@ export function GetReportsInRange(reports: Map<string, AccessReport>, start: str
 
     for (const [timestamp, report] of reports) {
         const reportDate = ParseTimestamp(timestamp)
-        if (startDate <= reportDate && reportDate < endDate) {
+        if (startDate <= reportDate && reportDate <= endDate) { // The `endDate` is usually the last timestamp. Include it.
             inRangeReports.set(timestamp, report)
         }
     }

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {ref} from "vue";
-import {AccessReport, FetchAccessReportsByRecentDays, Server, SortTimestamps} from "./analytics.ts";
+import {AccessReport, FetchAccessReportsByRecentDays, FilterBotReports, Server, SortTimestamps} from "./analytics.ts";
 import Dashboard from "./components/Dashboard.vue";
 import RawDataTable from "./components/RawDataTable.vue";
 
@@ -37,6 +37,10 @@ function insight() {
   showDashboard.value = false
 
   FetchAccessReportsByRecentDays(server as Server, dataRange).then((result) => {
+
+    if ((document.getElementById('do-filter-bot') as HTMLInputElement).checked) {
+      result = FilterBotReports(result)
+    }
 
     let timestamps = []
     for (const [timestamp,] of result) {
@@ -124,6 +128,11 @@ function insight() {
               id="data-range"
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Days" type="number" value="7">
+        </div>
+        <div class="flex items-center mb-4">
+          <input id="do-filter-bot" type="checkbox" checked
+                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+          <label for="do-filter-bot" class="ms-2 text-sm font-bold">Filter Reports from Bots</label>
         </div>
         <div class="flex items-center justify-between">
           <button
