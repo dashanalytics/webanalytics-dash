@@ -120,7 +120,7 @@ document.body.onload = () => {
 
   host.value = params.get('server')
   accessToken.value = params.get('access_token')
-  dataRange.value = params.get('data_range')
+  dataRange.value = params.get('data_range') || '7'
 }
 </script>
 
@@ -154,7 +154,7 @@ document.body.onload = () => {
           <input
               id="data_range"
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              placeholder="Days" type="number" value="7">
+              placeholder="Days" type="number">
         </div>
         <div class="flex items-center mb-4">
           <input id="do-filter-bot" type="checkbox" checked
