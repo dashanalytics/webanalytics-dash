@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import {AccessReport} from "../analytics.ts";
 import {countryName} from "../common.ts";
+import {ref} from "vue";
+import IPDetailDialog from "./IPDetailDialog.vue";
 
 const props = defineProps({
   reports: Map<string, AccessReport>,
 })
+
+const ipDetail = ref("")
+const ipDetailShow = ref(0)
+
 </script>
 
 <template>
+  <IPDetailDialog :ip="ipDetail" :trigger="ipDetailShow"></IPDetailDialog>
   <table>
     <thead>
     <tr>
@@ -25,7 +32,7 @@ const props = defineProps({
       <td>{{ timestamp }}</td>
       <td>{{ countryName.of(report.country) }}</td>
       <td style="font-size: 80%">{{ report.uuid }}</td>
-      <td style="font-size: 80%">{{ report.source_ip }}</td>
+      <td style="font-size: 80%" @click="ipDetail = report.source_ip; ipDetailShow++">{{ report.source_ip }}</td>
       <td style="font-size: 50%; max-width: 10vw">{{ report.user_agent }}</td>
       <td>{{ report.deploy_time }}</td>
       <td>{{ report.target }}</td>
