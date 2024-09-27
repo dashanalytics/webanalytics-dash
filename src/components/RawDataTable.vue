@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {AccessReport} from "../analytics.ts";
+import {AccessReport, IsBotReport} from "../analytics.ts";
 import {countryName} from "../common.ts";
 import {ref} from "vue";
 import IPDetailDialog from "./IPDetailDialog.vue";
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     </tr>
     </thead>
     <tbody>
-    <tr v-for="[timestamp, report] of props.reports" :style="[report.user_agent.includes('bot')?'color: gray':'']">
+    <tr v-for="[timestamp, report] of props.reports" :style="[IsBotReport(report)?'color: gray':'']">
       <td>{{ timestamp }}</td>
       <td>{{ countryName.of(report.country) }}</td>
       <td style="font-size: 80%">{{ report.uuid }}</td>

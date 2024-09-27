@@ -34,11 +34,18 @@ watch(props, () => {
 
   const queryString = localStorage.getItem('ipLookupQueryString')
 
+  if (queryString.length == 0) {
+    detail.value = {
+      err: 'Query string is empty. Abort.',
+    }
+    return
+  }
+
   ipLookup(queryString, props.ip).then((info) => {
     detail.value = JSON.parse(info)
   }).catch((err) => {
     detail.value = {
-      'hint': 'Might be blocked by client. Check DevTools and your browser extensions.',
+      'hint': 'Make sure your query string is correct. Or might be blocked by client. Check DevTools and your browser extensions.',
       err: err,
     }
   })
@@ -84,7 +91,7 @@ watch(props, () => {
                 </button>
                 <button type="button"
                         class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                        @click="clearCache()" ref="cancelButtonRef">Clear Cache
+                        @click="clearCache()" ref="cancelButtonRef">Clear Lookup Cache
                 </button>
               </div>
             </DialogPanel>

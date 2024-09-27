@@ -36,7 +36,7 @@ export function SortTimestamps(timestamps: string[]) {
 }
 
 export function IsBotReport(report: AccessReport) {
-    return report.user_agent.includes('bot')
+    return report.user_agent.includes('bot') || report.user_agent.includes('Headless')
 }
 
 export function FilterBotReports(reports: Map<string, AccessReport>) {
