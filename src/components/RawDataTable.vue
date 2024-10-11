@@ -44,8 +44,8 @@ document.addEventListener("DOMContentLoaded", () => {
     </tr>
     </thead>
     <tbody>
-    <tr v-for="[timestamp, report] of props.reports" :style="[IsBotReport(report)?'color: gray':'']">
-      <td>{{ timestamp }}</td>
+    <tr v-for="report of Array.from(props.reports.values()).reverse()" :style="[IsBotReport(report)?'color: gray':'']">
+      <td>{{ report.timestamp }}</td>
       <td>{{ countryName.of(report.country) }}</td>
       <td style="font-size: 80%">{{ report.uuid }}</td>
       <td style="font-size: 80%" @click="ipDetail = report.source_ip; ipDetailShow++">{{ report.source_ip }}</td>
