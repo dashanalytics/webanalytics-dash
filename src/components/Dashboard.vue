@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {AccessReport, GetDailyReports, GetHourlyReports} from "../analytics.ts"
+import {AccessReport, GetDailyReports, GetHourlyReports, GetHumanUuids} from "../analytics.ts"
 import {ref, watch} from "vue"
 import AccessCountChart from "./AccessCountChart.vue";
 import VisitorGeoMap from "./VisitorGeoMap.vue";
@@ -30,7 +30,7 @@ watch(props, () => {
   <CountryStatisticsChart :reports="props.reports" :start="props.start"
                           :end="props.end"></CountryStatisticsChart>
   <div class="overflow-auto" style="max-width: 90vw">
-    <RawDataTable :reports="reports"></RawDataTable>
+    <RawDataTable :reports="reports" :humanUuids="GetHumanUuids(reports.values())"></RawDataTable>
   </div>
 </template>
 

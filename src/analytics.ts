@@ -17,6 +17,8 @@ export class AccessReport {
     public user_agent = ''
     public deploy_time = ''
     public target = ''
+    public time = ''
+    public confirmed = 0
 }
 
 export function ParseTimestamp(timestamp: string) {
@@ -35,20 +37,16 @@ export function SortTimestamps(timestamps: string[]) {
     })
 }
 
-export function IsBotReport(report: AccessReport) {
-    return report.user_agent.includes('bot') || report.user_agent.includes('Headless')
+export function GetHumanUuids(reports: Iterable<AccessReport>) {
+    const uuids = new Set<string>()
+    for (const report of reports) if (report.confirmed == 1) uuids.add(report.uuid)
+    return uuids
 }
 
 export function FilterBotReports(reports: Map<string, AccessReport>) {
-    let filtered = new Map<string, AccessReport>()
-
-    for (const [timestamp, report] of reports) {
-        if (IsBotReport(report)) {
-            continue
-        }
-        filtered.set(timestamp, report)
-    }
-
+    const filtered = new Map<string, AccessReport>()
+    const humanUuids = GetHumanUuids(reports.values())
+    for (const [timestamp, report] of reports) if (humanUuids.has(report.uuid)) filtered.set(timestamp, report)
     return filtered
 }
 

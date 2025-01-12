@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import {AccessReport, IsBotReport} from "../analytics.ts";
+import {AccessReport} from "../analytics.ts";
 import {countryName} from "../common.ts";
 import {ref} from "vue";
 import IPDetailDialog from "./IPDetailDialog.vue";
 
 const props = defineProps({
   reports: Map<string, AccessReport>,
+  humanUuids: Set<string>,
 })
 
 const ipDetail = ref("")
@@ -34,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
   <table>
     <thead>
     <tr>
-      <th scope="col">Timestamp (UTC)</th>
+      <th scope="col">Timestamp / Time (UTC)</th>
       <th scope="col">Country / Region</th>
       <th scope="col">UUID</th>
       <th scope="col">Source IP</th>
@@ -44,8 +45,8 @@ document.addEventListener("DOMContentLoaded", () => {
     </tr>
     </thead>
     <tbody>
-    <tr v-for="report of Array.from(props.reports.values()).reverse()" :style="[IsBotReport(report)?'color: gray':'']">
-      <td>{{ report.timestamp }}</td>
+    <tr v-for="report of Array.from(props.reports.values()).reverse()" :style="[humanUuids.has(report.uuid)?'':'color: gray']">
+      <td>{{ report.timestamp }}<br/>{{ new Date(report.time).toUTCString() }}</td>
       <td>{{ countryName.of(report.country) }}</td>
       <td style="font-size: 80%">{{ report.uuid }}</td>
       <td style="font-size: 80%" @click="ipDetail = report.source_ip; ipDetailShow++">{{ report.source_ip }}</td>
