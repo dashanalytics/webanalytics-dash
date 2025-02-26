@@ -7,7 +7,7 @@ import {
   GetReportsInRange
 } from "../analytics.ts"
 import {ref, watch} from "vue"
-import {countryName, MapValues} from "../common.ts"
+import {getCountryName, MapValues} from "../common.ts"
 
 const props = defineProps({
   reports: Map<string, AccessReport>,
@@ -45,7 +45,7 @@ watch(props, () => {
   <table>
     <thead>
     <tr>
-      <th scope="col">Country / Region</th>
+      <th scope="col">Region</th>
       <th scope="col">Unique Visitors</th>
       <th scope="col">Unique IPs</th>
       <th scope="col">Access Count</th>
@@ -53,7 +53,7 @@ watch(props, () => {
     </thead>
     <tbody>
     <tr v-for="[country, statistics] of statisticsRef">
-      <td>{{ countryName.of(country) }}</td>
+      <td>{{ getCountryName(country) }}</td>
       <td>{{ statistics.uniqueVisitorsN }}</td>
       <td>{{ statistics.uniqueIPsN }}</td>
       <td>{{ statistics.accessCount }}</td>

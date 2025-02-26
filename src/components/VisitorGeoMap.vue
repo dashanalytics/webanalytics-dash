@@ -8,7 +8,7 @@ import VectorLayer from 'ol/layer/Vector.js'
 import VectorSource from 'ol/source/Vector.js'
 import View from 'ol/View.js'
 import {Fill, Style} from "ol/style"
-import {colorGradient, countryName, MapValues, RGB} from "../common.ts"
+import {colorGradient, getCountryName, MapValues, RGB} from "../common.ts"
 
 const props = defineProps({
   reports: Map<string, AccessReport>,
@@ -89,7 +89,7 @@ watch(props, () => {
 
     const countryCode = feature.get('iso_a2')
 
-    tooltipCountryName.value = countryName.of(countryCode)!
+    tooltipCountryName.value = getCountryName(countryCode)
     tooltipRequestCount.value = `${countryReports.get(countryCode)?.length || 'N/A'}`
 
     tooltipElement!.style.left = `${evt.originalEvent.clientX - tooltipElement.clientWidth / 2}px`

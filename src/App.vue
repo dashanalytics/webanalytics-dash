@@ -1,6 +1,13 @@
 <script lang="ts" setup>
 import {ref} from "vue";
-import {AccessReport, FetchAccessReportsByRecentDays, FilterBotReports, Server, SortTimestamps} from "./analytics.ts";
+import {
+  AccessReport,
+  DateToTimestamp,
+  FetchAccessReportsByRange,
+  FilterBotReports,
+  FormatTimeToScore,
+  SortTimestamps
+} from "./analytics.ts";
 import Dashboard from "./components/Dashboard.vue";
 
 const statusText = ref('')
@@ -35,7 +42,12 @@ function insight() {
 
   showDashboard.value = false
 
-  FetchAccessReportsByRecentDays(server as Server, dataRange).then((result) => {
+  const tNow = new Date(Date.now())
+
+  const tStart = new Date(new Date(tNow).setDate(tNow.getDate() - dataRange))
+  const tEnd = new Date(tNow)
+
+  FetchAccessReportsByRange(server, FormatTimeToScore(tStart), FormatTimeToScore(tEnd)).then((result) => {
 
     if ((document.getElementById('do-filter-bot') as HTMLInputElement).checked) {
       result = FilterBotReports(result)
@@ -47,8 +59,8 @@ function insight() {
     }
     SortTimestamps(timestamps)
 
-    start.value = timestamps[0]
-    end.value = timestamps[timestamps.length - 1]
+    start.value = DateToTimestamp(tStart)
+    end.value = DateToTimestamp(tEnd)
 
     reports.value = result
 
@@ -180,7 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       </form>
       <p class="text-center text-gray-500 text-xs">
-        <a href="https://jellyterra.com" target="_blank">&copy;2024 Jelly Terra. All rights reserved.</a>
+        <a href="https://jellyterra.com" target="_blank">&copy;2025 Jelly Terra. All rights reserved.</a>
       </p>
     </div>
   </div>

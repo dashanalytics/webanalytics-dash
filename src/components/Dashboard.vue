@@ -26,9 +26,11 @@ watch(props, () => {
                     :title="'Access Statistics - Daily'"></AccessCountChart>
   <AccessCountChart :id="'hour-statistics'" :reports="recentHoursReports"
                     :title="'Access Statistics - Hourly'"></AccessCountChart>
-  <VisitorGeoMap :reports="props.reports" :start="props.start" :end="props.end"></VisitorGeoMap>
-  <CountryStatisticsChart :reports="props.reports" :start="props.start"
-                          :end="props.end"></CountryStatisticsChart>
+  <div class="flex md:flex-row">
+    <VisitorGeoMap :reports="props.reports" :start="props.start" :end="props.end"></VisitorGeoMap>
+    <CountryStatisticsChart :reports="props.reports" :start="props.start"
+                            :end="props.end"></CountryStatisticsChart>
+  </div>
   <div class="overflow-auto" style="max-width: 90vw">
     <RawDataTable :reports="reports" :humanUuids="GetHumanUuids(reports.values())"></RawDataTable>
   </div>

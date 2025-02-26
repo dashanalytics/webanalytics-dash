@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {AccessReport} from "../analytics.ts";
-import {countryName} from "../common.ts";
+import {getCountryName} from "../common.ts";
 import {ref} from "vue";
 import IPDetailDialog from "./IPDetailDialog.vue";
 
@@ -35,19 +35,20 @@ document.addEventListener("DOMContentLoaded", () => {
   <table>
     <thead>
     <tr>
-      <th scope="col">Timestamp / Time (UTC)</th>
-      <th scope="col">Country / Region</th>
+      <th scope="col">Timestamp (UTC) / Your Time</th>
+      <th scope="col">Region</th>
       <th scope="col">UUID</th>
       <th scope="col">Source IP</th>
       <th scope="col">User Agent</th>
-      <th scope="col">Deploy Time</th>
+      <th scope="col">Deploy ID</th>
       <th scope="col">Target</th>
     </tr>
     </thead>
     <tbody>
-    <tr v-for="report of Array.from(props.reports.values()).reverse()" :style="[humanUuids.has(report.uuid)?'':'color: gray']">
-      <td>{{ report.timestamp }}<br/>{{ new Date(report.time).toUTCString() }}</td>
-      <td>{{ countryName.of(report.country) }}</td>
+    <tr v-for="report of Array.from(props.reports.values()).reverse()"
+        :style="[humanUuids.has(report.uuid)?'':'color: gray']">
+      <td>{{ report.timestamp }}<br/>{{ new Date(report.time).toString() }}</td>
+      <td>{{ getCountryName(report.country) }}</td>
       <td style="font-size: 80%">{{ report.uuid }}</td>
       <td style="font-size: 80%" @click="ipDetail = report.source_ip; ipDetailShow++">{{ report.source_ip }}</td>
       <td style="font-size: 50%; max-width: 10vw">{{ report.user_agent }}</td>

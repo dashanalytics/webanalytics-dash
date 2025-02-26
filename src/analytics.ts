@@ -93,6 +93,18 @@ export async function FetchAccessReportsByRange(server: Server, start: string, e
     return reports
 }
 
+export function DateToTimestamp(date: Date): string {
+    let year = date.getFullYear()
+    let month = String(date.getMonth() + 1)
+    let day = String(date.getDate())
+    let hours = String(date.getHours())
+    let minutes = String(date.getMinutes())
+    let seconds = String(date.getSeconds())
+    let mills = String(date.getMilliseconds())
+
+    return `${year}:${month}:${day}:${hours}:${minutes}:${seconds}.:${mills}`
+}
+
 export function FormatTime(date: Date) {
     let year = date.getFullYear()
     let month = String(date.getMonth() + 1).padStart(2, '0')
@@ -114,24 +126,6 @@ export async function FetchAccessReportsByRecentMonths(server: Server, months: n
     const now = new Date(Date.now())
 
     const start = new Date(new Date(now).setMonth(now.getMonth() - months))
-    const end = new Date(now)
-
-    return await FetchAccessReportsByRange(server, FormatTimeToScore(start), FormatTimeToScore(end))
-}
-
-export async function FetchAccessReportsByRecentDays(server: Server, days: number) {
-    const now = new Date(Date.now())
-
-    const start = new Date(new Date(now).setDate(now.getDate() - days))
-    const end = new Date(now)
-
-    return await FetchAccessReportsByRange(server, FormatTimeToScore(start), FormatTimeToScore(end))
-}
-
-export async function FetchAccessReportsByRecentHours(server: Server, hours: number) {
-    const now = new Date(Date.now())
-
-    const start = new Date(new Date(now).setHours(now.getHours() - hours))
     const end = new Date(now)
 
     return await FetchAccessReportsByRange(server, FormatTimeToScore(start), FormatTimeToScore(end))

@@ -13,7 +13,15 @@ export function colorGradient(startColor: RGB, endColor: RGB, x: number) {
     return `rgb(${r}, ${g}, ${b})`
 }
 
-export const countryName = new Intl.DisplayNames(['en'], {type: 'region'})
+const countryName = new Intl.DisplayNames(['en'], {type: 'region'})
+
+export function getCountryName(code: string): string {
+    try {
+        return countryName.of(code)
+    } catch (_) {
+        return code
+    }
+}
 
 export function ObjectToMap<T>(object: Object): Map<string, T> {
     const map = new Map<string, T>()
